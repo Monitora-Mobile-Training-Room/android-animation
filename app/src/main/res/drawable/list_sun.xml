@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/sun"
+        android:id="@+id/sun_drawable"/>
+    <item android:drawable="@drawable/ray_pulse"
+        android:id="@+id/ray_drawable"/>
+</layer-list>
