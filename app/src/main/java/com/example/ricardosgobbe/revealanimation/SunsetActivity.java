@@ -35,8 +35,8 @@ public class SunsetActivity extends AppCompatActivity {
     private boolean flag;
     private float startYSun;
     private float endYSun;
-    private View mSea;
-
+    private float startYShadow;
+    private float endYShadow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,6 @@ public class SunsetActivity extends AppCompatActivity {
         mView = findViewById(R.id.all_view);
         mRay = (ImageView) findViewById(R.id.ray_sun);
         mSunShadow = (ImageView) findViewById(R.id.sun_shadow);
-        mSea = findViewById(R.id.sea);
 
         startRayPulse();
 
@@ -86,16 +85,18 @@ public class SunsetActivity extends AppCompatActivity {
                 .setDuration(2000);
         nightSkyAnimator.setEvaluator(new ArgbEvaluator());
 
-        float startYShadow = mSky.getHeight();
-        float endYShadow  = mSunShadow.getTop();
+        startYShadow = mSunShadow.getTop();
+        endYShadow  = mSky.getHeight()*-1;
 
         ObjectAnimator shadow = ObjectAnimator.ofFloat(mSunShadow, "y", startYShadow, endYShadow).setDuration(3000);
         shadow.setInterpolator(new AccelerateInterpolator());
 
 
         animatorSet = new AnimatorSet();
+
         AnimatorSet animatorSet2 = new AnimatorSet();
         animatorSet2.play(animator2).before(nightSkyAnimator);
+
         this.animatorSet.play(animator)
                 .with(animatorSet2);
         AnimatorSet withShadow = new AnimatorSet();
@@ -116,12 +117,18 @@ public class SunsetActivity extends AppCompatActivity {
         ObjectAnimator animator3 = ObjectAnimator.ofInt(mSky, "backgroundColor", mNightColor, mSunsetColor);
         animator3.setDuration(2000).setEvaluator(new ArgbEvaluator());
 
+        ObjectAnimator shadowRising = ObjectAnimator.ofFloat(mSunShadow, "y", endYShadow, startYShadow).setDuration(3000);
+        shadowRising.setInterpolator(new AccelerateInterpolator());
+
 
         animatorSet2 = new AnimatorSet();
         AnimatorSet anin = new AnimatorSet();
         anin.play(animator3).before(animator2);
 
-        this.animatorSet2.play(animator).with(anin);
+        AnimatorSet fullAnimation = new AnimatorSet();
+        fullAnimation.play(anin).with(shadowRising);
+
+        this.animatorSet2.play(animator).with(fullAnimation);
         this.animatorSet2.start();
     }
 
